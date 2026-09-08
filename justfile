@@ -1,0 +1,52 @@
+set shell := ["bash", "-uc"]
+
+# List all available recipes
+default:
+    @just --list --unsorted
+
+# Build the ncash binary into ./ncash
+build:
+    go build -o ncash .
+
+# Run the test suite (skips the integration/agent-eval suites; see below)
+test:
+    go test -short -race ./...
+
+# Run the integration suite against a real, already-running lokihub
+# instance (needs integration/config.local.yaml — see integration/README.md);
+# not run in CI.
+test-integration:
+    go test -tags integration -v ./integration/...
+
+# Run the live-agent eval suite (real, billed Claude sessions against the
+# published Docker image — see integration/agent-eval/README.md); not run
+# in CI.
+eval *args:
+    ./integration/agent-eval/bin/run.sh {{args}}
+
+# Vet all packages
+vet:
+    go vet ./...
+
+# Tidy go.mod / go.sum
+tidy:
+    go mod tidy
+
+# Run vet + test together (local pre-push check)
+check: vet test
+
+# Run ncash straight from source
+dev *args:
+    go run . {{args}}
+
+# Run the docs site locally with hot reload — README.md, AGENTS.md, and
+# CHANGELOG.md changes sync automatically. http://localhost:4321/
+#
+# The docs site app itself lives in ohstr/docs-kit, shared across ohstr
+# projects (see that repo's README) rather than vendored here — this just
+# clones/updates a local cache of it under .docs-kit/ (gitignored) and runs
+# it against this repo's own content.
+docs-dev:
+    [ -d .docs-kit/.git ] && git -C .docs-kit pull --quiet || git clone --quiet https://github.com/ohstr/docs-kit .docs-kit
+    cd .docs-kit && [ -d node_modules ] || npm install
+    cd .docs-kit && DOCS_CONTENT_DIR="{{justfile_directory()}}" DOCS_TITLE=ncash DOCS_ACCENT_HUE=142 DOCS_FAVICON_GLYPH='$' npm run dev

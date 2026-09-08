@@ -1,0 +1,98 @@
+version: 2
+
+project_name: ncash
+
+builds:
+  - id: ncash
+    main: .
+    binary: ncash
+    env:
+      - CGO_ENABLED=0
+    goos: [linux, darwin, windows]
+    goarch: [amd64, arm64]
+    ldflags:
+      - -s -w -X github.com/ohstr/ncash/cmd.Version={{.Version}}+{{.ShortCommit}}
+
+archives:
+  - id: ncash
+    formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    name_template: >-
+      {{ .ProjectName }}_{{ .Os }}_{{ .Arch }}
+
+checksum:
+  name_template: checksums.txt
+
+# dockers_v2 (buildx, single multi-platform build) hit intermittent
+# "failed to calculate checksum of ref ...: not found" COPY failures in CI
+# on ncli's own release pipeline, twice in a row on linux/amd64, that
+# couldn't be pinned down or reproduced locally. Rolled back to the older
+# per-arch dockers + docker_manifests pipe (deprecated but battle-tested):
+# each arch gets its own single-platform buildx build, then
+# docker_manifests stitches the two per-arch tags into the multi-arch tag.
+dockers:
+  - id: ncash-amd64
+    ids: [ncash]
+    goos: linux
+    goarch: amd64
+    use: buildx
+    dockerfile: build/ncash/Dockerfile.release
+    image_templates:
+      - "ghcr.io/ohstr/ncash:{{ .Version }}-amd64"
+      - "ghcr.io/ohstr/ncash:latest-amd64"
+    build_flag_templates:
+      - "--platform=linux/amd64"
+  - id: ncash-arm64
+    ids: [ncash]
+    goos: linux
+    goarch: arm64
+    use: buildx
+    dockerfile: build/ncash/Dockerfile.release
+    image_templates:
+      - "ghcr.io/ohstr/ncash:{{ .Version }}-arm64"
+      - "ghcr.io/ohstr/ncash:latest-arm64"
+    build_flag_templates:
+      - "--platform=linux/arm64"
+
+docker_manifests:
+  - name_template: "ghcr.io/ohstr/ncash:{{ .Version }}"
+    image_templates:
+      - "ghcr.io/ohstr/ncash:{{ .Version }}-amd64"
+      - "ghcr.io/ohstr/ncash:{{ .Version }}-arm64"
+  - name_template: "ghcr.io/ohstr/ncash:latest"
+    image_templates:
+      - "ghcr.io/ohstr/ncash:latest-amd64"
+      - "ghcr.io/ohstr/ncash:latest-arm64"
+
+brews:
+  - name: ncash
+    repository:
+      owner: ohstr
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+    directory: Formula
+    homepage: "https://github.com/ohstr/ncash"
+    description: "A wallet CLI for NIP-CASH cash tokens and NIP-CW circle wallets."
+    license: "Unlicense"
+    install: |
+      bin.install "ncash"
+    test: |
+      system "#{bin}/ncash", "version"
+
+# No `changelog:` block here, deliberately — GoReleaser's changelog pipe is
+# also the only place that loads a `--release-notes` file into the release
+# body (internal/pipe/changelog.(Pipe).Run, before it ever reaches the
+# auto-changelog-from-commits code that follows that early return).
+# release.yml always passes `--release-notes`, so the pipe's own
+# early-return already guarantees notes come from CHANGELOG.md, never
+# GoReleaser's commit-log changelog — no `disable` needed.
+release:
+  github:
+    owner: ohstr
+    name: ncash
+  # Default is keep-existing, which would leave a stale/minimal body in
+  # place if a Release for the tag already exists (e.g. from a prior
+  # failed/retried run) instead of using --release-notes below.
+  mode: replace

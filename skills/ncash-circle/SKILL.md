@@ -1,0 +1,45 @@
+---
+name: ncash-circle
+description: Join a circle to get a personal Lightning wallet (`ncash join`, aliasing `ncash circle create`), the self-service call into a Circle Hub's create_circle_wallet. Use when handed a circlehub1... connection string (or a raw NWC URI for a Hub that hasn't adopted the bech32 form) and asked to join/onboard/get a wallet from it.
+license: Unlicense
+---
+
+<!-- Mirrors ohstr/ncash's cmd/circle.go and cmd/shortcuts.go as of
+writing. Self-contained by design — update by hand if flags/schemas
+change. -->
+
+# ncash join / ncash circle create
+
+```sh
+ncash join --hub circlehub1... --max-amount 100000 --json
+```
+
+`join` is a top-level shortcut for `ncash circle create` — identical flags
+and behavior, just the verb a member actually thinks in ("join a circle")
+rather than the wire method's own name (`create_circle_wallet`). Both
+forms work identically; prefer `join`.
+
+| Flag | Meaning |
+|---|---|
+| `--hub` (required) | the Circle Hub connection: `circlehub1...` (recommended) or a raw NWC URI |
+| `--max-amount` | requested spend cap, in mloki |
+| `--expiry` | requested expiry duration (`0` = the Hub's own default) |
+| `--budget-renewal` | `daily`\|`weekly`\|`monthly`\|`yearly`\|`never` (default: the Hub's own) |
+| `--as` | override credential — `pubkey:<privkey>` (the only NIP-CW credential mode); defaults to your local identity |
+
+```sh
+# {"wallet": "circle:<label-or-n>", "default": true, "response": {...}}
+ncash join --hub circlehub1... --max-amount 100000 --json
+```
+
+A `--hub` value that's actually a **Cash Hub** connection (`cashhub1...`)
+gets a specific corrective error (`code: "invalid_input"`) — ncash can't
+mint, and joining isn't the right verb for a Cash Hub anyway. The
+resulting personal wallet is saved to your wallet inventory under a
+generated name and set as your default if it's your first-ever wallet
+(`--json` always accepts the default-wallet prompt; text mode asks unless
+`--yes`).
+
+There is no `circle leave`/`circle list` — a circle membership is just an
+ordinary registered wallet from this point on (`ncash wallet show`,
+`ncash connect rm <name>` to drop it).

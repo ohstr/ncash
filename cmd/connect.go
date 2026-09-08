@@ -1,0 +1,159 @@
+package cmd
+
+import (
+	"fmt"
+
+	"github.com/spf13/cobra"
+
+	"github.com/ohstr/ncash/internal/config"
+	"github.com/ohstr/ncash/internal/output"
+)
+
+func newConnectCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "connect",
+		Short: "Manage foreign wallet connections",
+		Long: `The general-purpose way to register any NWC connection ncash didn't
+produce itself: your own plain Lightning wallet (e.g. a standard NWC
+connection you already generated some other way), or one handed to you
+from another device.`,
+	}
+	cmd.AddCommand(newConnectAddCmd(), newConnectListCmd(), newConnectUseCmd(), newConnectRmCmd())
+	return cmd
+}
+
+func newConnectAddCmd() *cobra.Command {
+	return &cobra.Command{
+		Use:   "add <name> <connection>",
+		Short: "Register a connection under a name",
+		Args:  output.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			jsonMode, _ := cmd.Flags().GetBool("json")
+			name, value := args[0], args[1]
+
+			s, err := config.Load()
+			if err != nil {
+				return output.RuntimeError(cmd, err)
+			}
+			wasEmpty := s.IsEmpty()
+			if err := s.Add(name, value); err != nil {
+				return output.ConflictError(cmd, name, err)
+			}
+
+			setDefault := false
+			if wasEmpty {
+				setDefault = jsonMode || Confirm(cmd, true, "This is your only wallet — use it as your default?")
+			} else {
+				setDefault = !jsonMode && Confirm(cmd, false, fmt.Sprintf("Set %s as your default wallet?", name))
+			}
+			if setDefault {
+				_ = s.SetDefault(name)
+			}
+			if err := s.Save(); err != nil {
+				return output.RuntimeError(cmd, err)
+			}
+
+			if jsonMode {
+				output.PrintJSON(map[string]any{"name": name, "default": setDefault})
+				return nil
+			}
+			fmt.Printf("Saved connection: %s.\n", name)
+			if setDefault {
+				fmt.Printf("Default wallet set to %s.\n", name)
+			}
+			return nil
+		},
+	}
+}
+
+func newConnectListCmd() *cobra.Command {
+	return &cobra.Command{
+		Use:   "list",
+		Short: "List registered connections",
+		Args:  output.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			jsonMode, _ := cmd.Flags().GetBool("json")
+			s, err := config.Load()
+			if err != nil {
+				return output.RuntimeError(cmd, err)
+			}
+			if jsonMode {
+				output.PrintJSON(map[string]any{"connections": s.Connections, "default": s.Default})
+				return nil
+			}
+			if s.IsEmpty() {
+				fmt.Println("No connections registered yet. Run `ncash init` or `ncash connect add`.")
+				return nil
+			}
+			for _, c := range s.Connections {
+				marker := ""
+				if c.Name == s.Default {
+					marker = " [default]"
+				}
+				fmt.Printf("%s%s\n", c.Name, marker)
+			}
+			return nil
+		},
+	}
+}
+
+func newConnectUseCmd() *cobra.Command {
+	return &cobra.Command{
+		Use:   "use <name>",
+		Short: "Set the default connection",
+		Args:  output.ExactArgs(1),
+		RunE:  runWalletUse,
+	}
+}
+
+// runWalletUse backs both `ncash wallet use` (ncash-plan.md's canonical
+// form, mirroring ncli's own `relay context` pattern) and `ncash connect
+// use` (the Command Tree section's own connect-group listing) — same
+// action, two entry points sharing one function rather than duplicating
+// the logic, the same pattern the top-level shortcuts use throughout.
+func runWalletUse(cmd *cobra.Command, args []string) error {
+	jsonMode, _ := cmd.Flags().GetBool("json")
+	s, err := config.Load()
+	if err != nil {
+		return output.RuntimeError(cmd, err)
+	}
+	if err := s.SetDefault(args[0]); err != nil {
+		return output.NotFoundError(cmd, args[0], err)
+	}
+	if err := s.Save(); err != nil {
+		return output.RuntimeError(cmd, err)
+	}
+	if jsonMode {
+		output.PrintJSON(map[string]any{"default": args[0]})
+		return nil
+	}
+	fmt.Printf("Default wallet set to %s.\n", args[0])
+	return nil
+}
+
+func newConnectRmCmd() *cobra.Command {
+	return &cobra.Command{
+		Use:   "rm <name>",
+		Short: "Remove a registered connection",
+		Args:  output.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			jsonMode, _ := cmd.Flags().GetBool("json")
+			s, err := config.Load()
+			if err != nil {
+				return output.RuntimeError(cmd, err)
+			}
+			if !s.Remove(args[0]) {
+				return output.NotFoundError(cmd, args[0], fmt.Errorf("no connection named %q", args[0]))
+			}
+			if err := s.Save(); err != nil {
+				return output.RuntimeError(cmd, err)
+			}
+			if jsonMode {
+				output.PrintJSON(map[string]any{"removed": args[0]})
+				return nil
+			}
+			fmt.Printf("Removed %s.\n", args[0])
+			return nil
+		},
+	}
+}

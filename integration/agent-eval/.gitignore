@@ -1,0 +1,5 @@
+.creds-seed/
+fixtures/*
+!fixtures/.gitkeep
+report/*
+!report/.gitkeep

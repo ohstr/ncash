@@ -1,12 +1,12 @@
-# Isolated environment for the ncash agent-capability eval. One service:
+# Isolated environment for the cashctl agent-capability eval. One service:
 #
 #   agent - the agent-under-test's machine (see agent/Dockerfile). Has no
-#           source checkout of this repo and no ncash binary baked in —
+#           source checkout of this repo and no cashctl binary baked in —
 #           the whole point of this harness is that its only knowledge of
-#           ncash comes from what it fetches at runtime.
+#           cashctl comes from what it fetches at runtime.
 #
 # Unlike ncli's own eval rig, there's no local server for this container to
-# share a network namespace with: ncash is a client of an *external* Hub
+# share a network namespace with: cashctl is a client of an *external* Hub
 # (a real, already-running lokihub instance — see ../config.local.yaml),
 # so `agent` just needs ordinary outbound internet access.
 
@@ -18,10 +18,10 @@ services:
       # circlehub1... connection) is written by bin/run.sh into
       # ./fixtures/ before that round starts — see prepare_r2 in
       # bin/run.sh. Nothing here needs a vault password the way ncli's
-      # rig does: ncash's own local identity is unencrypted by design (see
-      # ncash-plan.md's "Local wallet layer" — it holds spend authority,
-      # not funds directly), so `ncash init --json` never prompts.
-      - NCASH_EVAL=1
+      # rig does: cashctl's own local identity is unencrypted by design (see
+      # cashctl-plan.md's "Local wallet layer" — it holds spend authority,
+      # not funds directly), so `cashctl init --json` never prompts.
+      - CASHCTL_EVAL=1
     volumes:
       - ./rounds:/rounds:ro
       - ./fixtures:/fixtures:ro

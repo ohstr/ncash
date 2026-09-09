@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Ground truth for R1: did the token actually get redeemed server-side —
 # checked directly against lokihub's admin API (the same one that minted
-# it), not by trusting the agent's self-report or ncash's own CLI output.
+# it), not by trusting the agent's self-report or cashctl's own CLI output.
 set -uo pipefail
 cd "$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 source bin/lib.sh

@@ -1,4 +1,4 @@
-// Package output provides ncash's dual human/JSON rendering, its error
+// Package output provides cashctl's dual human/JSON rendering, its error
 // classification/exit-code contract (mirroring ncli's own cli/common
 // conventions so an agent or script that already knows one knows both),
 // and NWC-error-to-plain-language translation for human mode.
@@ -20,7 +20,7 @@ func PrintJSON(v any) {
 	enc := json.NewEncoder(os.Stdout)
 	enc.SetIndent("", "  ")
 	if err := enc.Encode(v); err != nil {
-		fmt.Fprintf(os.Stderr, "ncash: failed to encode JSON output: %s\n", err)
+		fmt.Fprintf(os.Stderr, "cashctl: failed to encode JSON output: %s\n", err)
 	}
 }
 

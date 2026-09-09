@@ -10,21 +10,21 @@ import (
 	nipcashclient "github.com/ohstr/nmilat/nipcash/client"
 	"github.com/spf13/cobra"
 
-	"github.com/ohstr/ncash/internal/config"
-	"github.com/ohstr/ncash/internal/credential"
-	"github.com/ohstr/ncash/internal/ledger"
-	"github.com/ohstr/ncash/internal/output"
+	"github.com/ohstr/cashctl/internal/config"
+	"github.com/ohstr/cashctl/internal/credential"
+	"github.com/ohstr/cashctl/internal/ledger"
+	"github.com/ohstr/cashctl/internal/output"
 )
 
 func newCashRedeemCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "redeem",
 		Short: "Redeem a held cash token into a Lightning wallet",
-		Long: `cash_redeem always needs a destination invoice on the wire — ncash
+		Long: `cash_redeem always needs a destination invoice on the wire — cashctl
 generates one for you: --token picks the source (auto-picked when you only
 hold one), --to picks the destination wallet (defaults to your default
 wallet). --invoice bypasses both, redeeming straight into an invoice from
-any other wallet app you already have — no ncash-registered wallet needed.`,
+any other wallet app you already have — no cashctl-registered wallet needed.`,
 		Args: output.NoArgs,
 		RunE: runCashRedeem,
 	}
@@ -121,7 +121,7 @@ func runCashRedeem(cmd *cobra.Command, args []string) error {
 }
 
 // resolveHeldToken picks which held token to act on: --token by ID, or
-// auto-picked when exactly one is held — see ncash-plan.md's "auto-picked
+// auto-picked when exactly one is held — see cashctl-plan.md's "auto-picked
 // when only one held token qualifies" rule.
 func resolveHeldToken(cmd *cobra.Command, l *ledger.Ledger) (*ledger.Entry, error) {
 	if id, _ := cmd.Flags().GetString("token"); id != "" {
@@ -133,10 +133,10 @@ func resolveHeldToken(cmd *cobra.Command, l *ledger.Ledger) (*ledger.Entry, erro
 	}
 	held := l.Held()
 	if len(held) == 0 {
-		return nil, output.NotFoundError(cmd, "", fmt.Errorf("you have no held cash tokens — receive one first with `ncash receive <token>`"))
+		return nil, output.NotFoundError(cmd, "", fmt.Errorf("you have no held cash tokens — receive one first with `cashctl receive <token>`"))
 	}
 	if len(held) > 1 {
-		return nil, output.UsageError(cmd, fmt.Errorf("you hold %d cash tokens — specify which with --token <id> (see `ncash wallet show`)", len(held)))
+		return nil, output.UsageError(cmd, fmt.Errorf("you hold %d cash tokens — specify which with --token <id> (see `cashctl wallet show`)", len(held)))
 	}
 	return &held[0], nil
 }
@@ -195,7 +195,7 @@ func resolveDestWallet(cmd *cobra.Command) (name, value string, err error) {
 	}
 	c, ok := s.DefaultConnection()
 	if !ok {
-		return "", "", output.NotFoundError(cmd, "", fmt.Errorf(noWalletConfiguredMsg+"\n  Or redeem straight into an invoice from any other wallet app: ncash redeem --invoice <bolt11>"))
+		return "", "", output.NotFoundError(cmd, "", fmt.Errorf(noWalletConfiguredMsg+"\n  Or redeem straight into an invoice from any other wallet app: cashctl redeem --invoice <bolt11>"))
 	}
 	return c.Name, c.Value, nil
 }
@@ -224,5 +224,5 @@ func resolveAmount(cmd *cobra.Command, l *ledger.Ledger, entry *ledger.Entry, so
 			return r.AmountMillis, nil
 		}
 	}
-	return 0, output.NotFoundError(cmd, entry.ID, fmt.Errorf("couldn't determine this token's amount — try `ncash receive --verify` first, or check it's still valid"))
+	return 0, output.NotFoundError(cmd, entry.ID, fmt.Errorf("couldn't determine this token's amount — try `cashctl receive --verify` first, or check it's still valid"))
 }

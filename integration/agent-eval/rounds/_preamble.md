@@ -1,5 +1,5 @@
 You are operating a fresh Linux machine with internet access. A
-command-line tool called `ncash` may already be installed, or may not be —
+command-line tool called `cashctl` may already be installed, or may not be —
 check for yourself rather than assuming either way.
 
 Work autonomously. Nothing in this task is a trick question and there is

@@ -22,7 +22,7 @@ done
 echo "${ROWS}" | jq '.' > "${RUN_DIR}/report.json"
 
 {
-  echo "# ncash agent-capability eval — $(basename "${RUN_DIR}")"
+  echo "# cashctl agent-capability eval — $(basename "${RUN_DIR}")"
   echo
   echo "| Round | Self-reported | Verified (ground truth) | Process quality |"
   echo "|---|---|---|---|"

@@ -6,13 +6,13 @@ import (
 	"github.com/ohstr/nmilat/utils"
 	"github.com/spf13/cobra"
 
-	"github.com/ohstr/ncash/internal/identity"
+	"github.com/ohstr/cashctl/internal/identity"
 )
 
 // localPrivKey resolves the local identity's raw private key — re-
 // unlocking an ncli vault identity live (prompting for its password,
 // honoring NCLI_VAULT_PASSWORD) if that's the identity source; never
-// prompts for a local (ncash-generated) identity.
+// prompts for a local (cashctl-generated) identity.
 func localPrivKey(cmd *cobra.Command) (string, error) {
 	jsonMode, _ := cmd.Flags().GetBool("json")
 	return identity.Resolve(func() (string, error) { return ResolveVaultPassword(jsonMode) })
@@ -36,7 +36,7 @@ func localCashCredential(cmd *cobra.Command) (nipcash.Credential, error) {
 	return nipcash.BySigning(priv), nil
 }
 
-// localCircleCredential is the default --as for `ncash join`.
+// localCircleCredential is the default --as for `cashctl join`.
 func localCircleCredential(cmd *cobra.Command) (nipcw.Credential, error) {
 	priv, err := localPrivKey(cmd)
 	if err != nil {

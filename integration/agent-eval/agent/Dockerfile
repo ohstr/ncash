@@ -1,11 +1,11 @@
 # The agent-under-test's machine. Deliberately minimal and deliberately
-# does NOT contain ncash, Go, or a copy of the ncash source tree — the
-# whole point of this harness is that the agent's only knowledge of ncash
+# does NOT contain cashctl, Go, or a copy of the cashctl source tree — the
+# whole point of this harness is that the agent's only knowledge of cashctl
 # comes from what it fetches at runtime (docs/PROMPT.md -> AGENTS.md ->
 # skills), the same as a real stranger picking it up for the first time.
 #
 # Unlike ncli's own agent-eval rig, there is no local "relay" service to
-# share a network namespace with here: ncash is a client of an *external*
+# share a network namespace with here: cashctl is a client of an *external*
 # Hub (a real, already-running lokihub instance named in
 # integration/config.local.yaml), not a server of its own — so this
 # container only needs ordinary outbound internet access, nothing more.

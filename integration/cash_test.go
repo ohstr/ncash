@@ -13,7 +13,7 @@ import (
 	relayclient "github.com/ohstr/nmilat/relay/client"
 )
 
-const ephemeralFixtureNamePrefix = "ncash integration"
+const ephemeralFixtureNamePrefix = "cashctl integration"
 
 // setUpCashHub provisions a throwaway, self-funded cash_hub (with
 // make_invoice/pay_invoice/get_balance so it can also act as a redeem
@@ -97,8 +97,8 @@ func dialNWC(t *testing.T, ctx context.Context, hubPairingURI string) *relayclie
 }
 
 // TestCashLifecycle_MintReceiveRedeem mints a real cash token addressed to
-// ncash's freshly generated local identity via a live cash_hub, receives it
-// through the compiled ncash binary, and redeems it into an invoice from
+// cashctl's freshly generated local identity via a live cash_hub, receives it
+// through the compiled cashctl binary, and redeems it into an invoice from
 // the same hub — proving the full mint -> receive -> redeem round trip
 // against a real, running lokihub instance end to end.
 func TestCashLifecycle_MintReceiveRedeem(t *testing.T) {
@@ -152,7 +152,7 @@ func TestCashLifecycle_MintReceiveRedeem(t *testing.T) {
 	}
 
 	nwcClient := dialNWC(t, ctx, hub.PairingUri)
-	invoiceTx, err := nwcClient.MakeInvoice(ctx, nip47.MakeInvoiceParams{Amount: int64(amountMillis), Description: "ncash integration redeem"})
+	invoiceTx, err := nwcClient.MakeInvoice(ctx, nip47.MakeInvoiceParams{Amount: int64(amountMillis), Description: "cashctl integration redeem"})
 	if err != nil {
 		t.Fatalf("make_invoice: %v", err)
 	}
@@ -164,9 +164,9 @@ func TestCashLifecycle_MintReceiveRedeem(t *testing.T) {
 }
 
 // TestCashInspect_DecodeAndListRecipients mints a bearer cash token, then
-// exercises ncash's local-only decode and network-backed list-recipients
+// exercises cashctl's local-only decode and network-backed list-recipients
 // commands against it — the two read-only "inspect a token" entry points
-// (ncash-plan.md's Cash command tree) that TestCashLifecycle_* doesn't
+// (cashctl-plan.md's Cash command tree) that TestCashLifecycle_* doesn't
 // otherwise cover.
 func TestCashInspect_DecodeAndListRecipients(t *testing.T) {
 	cfg, err := LoadConfig("")
@@ -387,7 +387,7 @@ func mintPubkeyTokenFromHub(t *testing.T, hub adminCreateAppResponse, pubkeyHex 
 // TestCashTransfer_Full receives a real pubkey-mode token, transfers it in
 // full to a second (uncontrolled) identity, and independently verifies the
 // transfer landed server-side by dialing the resulting new token directly
-// and calling list_recipients on it — not by trusting ncash transfer's own
+// and calling list_recipients on it — not by trusting cashctl transfer's own
 // reported success.
 func TestCashTransfer_Full(t *testing.T) {
 	cfg, err := LoadConfig("")

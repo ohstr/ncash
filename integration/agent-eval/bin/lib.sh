@@ -43,7 +43,7 @@ self_report_exists() {
   [ -s "${run_dir}/${round}.self-report.json" ]
 }
 
-# agent_exec <command...> — runs inside the agent container, ncash already on PATH
+# agent_exec <command...> — runs inside the agent container, cashctl already on PATH
 agent_exec() {
   docker compose exec -T agent bash -lc "export PATH=\"\$HOME/.local/bin:\$PATH\"; $*"
 }

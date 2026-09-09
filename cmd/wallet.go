@@ -11,10 +11,10 @@ import (
 	"github.com/ohstr/nmilat/utils"
 	"github.com/spf13/cobra"
 
-	"github.com/ohstr/ncash/internal/config"
-	"github.com/ohstr/ncash/internal/identity"
-	"github.com/ohstr/ncash/internal/ledger"
-	"github.com/ohstr/ncash/internal/output"
+	"github.com/ohstr/cashctl/internal/config"
+	"github.com/ohstr/cashctl/internal/identity"
+	"github.com/ohstr/cashctl/internal/ledger"
+	"github.com/ohstr/cashctl/internal/output"
 )
 
 func newWalletCmd() *cobra.Command {
@@ -93,7 +93,7 @@ func newWalletShowCmd() *cobra.Command {
 			fmt.Printf("Identity: %s (%s)\n", npub, source)
 			fmt.Println()
 			if s.IsEmpty() {
-				fmt.Println("No wallets registered yet. Run `ncash join --hub ...` or `ncash connect add`.")
+				fmt.Println("No wallets registered yet. Run `cashctl join --hub ...` or `cashctl connect add`.")
 			} else {
 				fmt.Println("Wallets:")
 				for _, c := range s.Connections {

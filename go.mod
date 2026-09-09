@@ -1,4 +1,4 @@
-module github.com/ohstr/ncash
+module github.com/ohstr/cashctl
 
 go 1.26.8
 

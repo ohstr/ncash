@@ -18,25 +18,25 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout ncash
+      - name: Checkout cashctl
         uses: actions/checkout@v4
         with:
-          path: ncash
+          path: cashctl
           fetch-depth: 0
 
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: ncash/go.mod
+          go-version-file: cashctl/go.mod
 
       # Build/test gate, same commands as .github/workflows/ci.yml. A
       # release is never cut from a state that wouldn't also pass CI.
       - name: Vet
-        working-directory: ncash
+        working-directory: cashctl
         run: go vet ./...
 
       - name: Test
-        working-directory: ncash
+        working-directory: cashctl
         run: go test -short ./...
 
       # No git event ever triggers a release by itself (see `on:` above,
@@ -45,7 +45,7 @@ jobs:
       # part of normal development.
       - name: Resolve version and notes from CHANGELOG.md
         id: changelog
-        working-directory: ncash
+        working-directory: cashctl
         env:
           VERSION_INPUT: ${{ inputs.version }}
         run: |
@@ -83,7 +83,7 @@ jobs:
           cat /tmp/release-notes.md
 
       - name: Tag release
-        working-directory: ncash
+        working-directory: cashctl
         env:
           VERSION: ${{ steps.changelog.outputs.version }}
           ACTOR: ${{ github.actor }}
@@ -120,7 +120,7 @@ jobs:
       # GoReleaser cross-compiles the binaries, publishes the GitHub Release
       # (archives + checksums.txt) with the CHANGELOG.md-derived notes above
       # instead of its own auto-generated changelog, pushes the multi-arch
-      # ghcr.io/ohstr/ncash image, and updates the ohstr/homebrew-tap
+      # ghcr.io/ohstr/cashctl image, and updates the ohstr/homebrew-tap
       # formula. version is pinned to the v2 line (matching
       # .goreleaser.yaml's own `version: 2` schema) instead of resolving
       # whatever "latest" is at run time, so a future GoReleaser release
@@ -130,7 +130,7 @@ jobs:
         uses: goreleaser/goreleaser-action@v6
         with:
           version: "~> v2"
-          workdir: ncash
+          workdir: cashctl
           args: release --clean --release-notes=/tmp/release-notes.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,5 +1,5 @@
-// Package ledger tracks cash tokens ncash has received or produced for
-// itself, and a chronological log of local actions (ncash-plan.md's
+// Package ledger tracks cash tokens cashctl has received or produced for
+// itself, and a chronological log of local actions (cashctl-plan.md's
 // "Ledger entries store what's needed to act again without re-asking the
 // user").
 package ledger
@@ -14,7 +14,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/ohstr/ncash/internal/appdir"
+	"github.com/ohstr/cashctl/internal/appdir"
 )
 
 // Status values a held token moves through.
@@ -25,11 +25,11 @@ const (
 	StatusConsolidated = "consolidated"
 )
 
-// Entry is one cash token ncash knows about. WalletPubkey/Secret/RelayURLs/
+// Entry is one cash token cashctl knows about. WalletPubkey/Secret/RelayURLs/
 // IdentityRequired/AmountMillis are decoded straight from Token (see
 // nipcash.Decode) — cached here for display convenience, not as a separate
 // source of truth. The connection-key fields are the one thing that can't
-// be recovered from the token bytes alone (see ncash-plan.md): a
+// be recovered from the token bytes alone (see cashctl-plan.md): a
 // *reference* (attestation event ID + IA pubkey), never a cached copy of
 // the attestation event, so redeeming always re-checks live revocation.
 type Entry struct {
@@ -37,7 +37,7 @@ type Entry struct {
 	Token        string `json:"token"`
 	WalletPubkey string `json:"wallet_pubkey"`
 	// Secret is the token's own type-2 TLV field: the NWC connection
-	// secret. It lets ncash dial the wallet (list-recipients, decode,
+	// secret. It lets cashctl dial the wallet (list-recipients, decode,
 	// ...) but is NEVER sufficient to redeem/transfer a bearer slice —
 	// see BearerSecret's own doc comment (NIP-CASH.md's Redemption
 	// Metadata section covers this distinction in full).
@@ -60,7 +60,7 @@ type Entry struct {
 	BearerSecret string `json:"bearer_secret,omitempty"`
 
 	// Connection-key mode reference — set only when the user has told
-	// ncash this token is connection-key-bound (not derivable from the
+	// cashctl this token is connection-key-bound (not derivable from the
 	// token itself; IdentityRequired only says a proof is needed, not
 	// which mode). Empty for pubkey- and bearer-mode tokens.
 	ConnectionKeyPlatform   string `json:"connection_key_platform,omitempty"`
@@ -69,7 +69,7 @@ type Entry struct {
 	IAPubkey                string `json:"ia_pubkey,omitempty"`
 }
 
-// HistoryEntry is one line of ncash's local action log (`ncash wallet
+// HistoryEntry is one line of cashctl's local action log (`cashctl wallet
 // history`).
 type HistoryEntry struct {
 	At     string `json:"at"`
@@ -113,7 +113,7 @@ func Load() (*Ledger, error) {
 }
 
 // Save persists l. 0600: a bearer-mode entry's Secret field is the money —
-// see ncash-plan.md's "makes ledger.json as sensitive as a seed file."
+// see cashctl-plan.md's "makes ledger.json as sensitive as a seed file."
 func (l *Ledger) Save() error {
 	p, err := path()
 	if err != nil {
@@ -207,7 +207,7 @@ func (l *Ledger) AppendHistory(action, detail string) {
 }
 
 // newID generates a short, human-typeable local ID in the "tok-xxxx" shape
-// shown throughout ncash-plan.md's walkthroughs, retrying on the
+// shown throughout cashctl-plan.md's walkthroughs, retrying on the
 // astronomically unlikely collision with an existing entry.
 func (l *Ledger) newID() string {
 	for {

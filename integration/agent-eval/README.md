@@ -1,10 +1,10 @@
 # Agent-capability eval
 
 A different kind of test from everything else in this repo: instead of
-asserting ncash's own code is correct, this harness measures whether a
+asserting cashctl's own code is correct, this harness measures whether a
 **real, unmodified Claude Code agent** — with no source checkout, no
-special knowledge of ncash, and only what it can fetch at runtime
-(`README.md`/`AGENTS.md`/`skills/`) — can actually pick up ncash cold and
+special knowledge of cashctl, and only what it can fetch at runtime
+(`README.md`/`AGENTS.md`/`skills/`) — can actually pick up cashctl cold and
 use it correctly. It's slow, it costs real money (genuine Claude API
 usage per round), and it's not deterministic the way `go test` is — so
 it's not run in CI. Run it by hand before a release, or whenever
@@ -15,7 +15,7 @@ can't see.
 
 ```
 compose.yaml   -- one throwaway `agent` container: Debian, curl, jq, and
-                  the Claude Code CLI. No ncash, no Go, no source checkout.
+                  the Claude Code CLI. No cashctl, no Go, no source checkout.
 rounds/*.md    -- one task per round, each a fresh `claude -p` invocation
 bin/run.sh     -- orchestrates a full run: provisions fixtures, drives
                   each round, verifies, judges, reports
@@ -48,7 +48,7 @@ code/JSON shape against `AGENTS.md`'s own table.
    `r3-error-contract` don't need it at all.
 3. `docker` + `docker compose`, and a Go toolchain on this host (used to
    decode an npub and mint a bearer cash token — see `decode-npub/` and
-   `mint-fixture/`; neither ships with, or is imported by, ncash itself).
+   `mint-fixture/`; neither ships with, or is imported by, cashctl itself).
 
 ```sh
 bin/run.sh                              # every round
@@ -57,13 +57,13 @@ bin/run.sh r0-bootstrap r3-error-contract   # just these
 
 ## Rounds
 
-- **r0-bootstrap** — install ncash from scratch (following
-  `PROMPT.md`/`README.md`), confirm `ncash init --json`, pull in the
+- **r0-bootstrap** — install cashctl from scratch (following
+  `PROMPT.md`/`README.md`), confirm `cashctl init --json`, pull in the
   matching skill.
 - **r1-cash-lifecycle** — receive a real, pre-minted bearer cash token,
   verify it, redeem it into a real invoice. Verified by checking the
   minted cash_wallet child's server-side `claimed` state directly, not by
-  trusting `ncash redeem`'s own reported success.
+  trusting `cashctl redeem`'s own reported success.
 - **r2-circle-join** — join a real, ephemeral circle_hub (the agent's own
   freshly generated identity gets authorized mid-round, once it exists).
   Verified by checking a circle_wallet child actually exists under that

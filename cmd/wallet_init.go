@@ -6,19 +6,19 @@ import (
 	ncli "github.com/ohstr/ncli/client"
 	"github.com/spf13/cobra"
 
-	"github.com/ohstr/ncash/internal/config"
-	"github.com/ohstr/ncash/internal/dial"
-	"github.com/ohstr/ncash/internal/identity"
-	"github.com/ohstr/ncash/internal/output"
+	"github.com/ohstr/cashctl/internal/config"
+	"github.com/ohstr/cashctl/internal/dial"
+	"github.com/ohstr/cashctl/internal/identity"
+	"github.com/ohstr/cashctl/internal/output"
 )
 
 func newWalletInitCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "init",
-		Short: "Set up your ncash identity (and optionally a Lightning wallet)",
-		Long: `Sets up the Nostr identity ncash signs with by default everywhere —
+		Short: "Set up your cashctl identity (and optionally a Lightning wallet)",
+		Long: `Sets up the Nostr identity cashctl signs with by default everywhere —
 reusing an existing ncli vault identity if you have one, or generating a
-new one just for ncash otherwise.
+new one just for cashctl otherwise.
 
 Also offers to register a Lightning wallet connection (NWC) as your
 default, if you already have one.`,
@@ -34,7 +34,7 @@ func runWalletInit(cmd *cobra.Command, args []string) error {
 	if exists, err := identity.Exists(); err != nil {
 		return output.RuntimeError(cmd, err)
 	} else if exists {
-		output.Linef(jsonMode, "Already configured. Run `ncash wallet show` to see your identity.")
+		output.Linef(jsonMode, "Already configured. Run `cashctl wallet show` to see your identity.")
 		if jsonMode {
 			output.PrintJSON(map[string]any{"already_configured": true})
 		}
@@ -60,7 +60,7 @@ func runWalletInit(cmd *cobra.Command, args []string) error {
 }
 
 // setUpIdentity offers an existing ncli vault entry if one is available,
-// otherwise generates ncash's own local identity. Returns the resulting
+// otherwise generates cashctl's own local identity. Returns the resulting
 // npub and a short human-readable source label.
 func setUpIdentity(cmd *cobra.Command, jsonMode bool) (npub, source string, err error) {
 	exists, err := ncli.VaultExists()
@@ -73,14 +73,14 @@ func setUpIdentity(cmd *cobra.Command, jsonMode bool) (npub, source string, err 
 				for i, e := range entries {
 					output.Linef(false, "  %d. %s (%s)", i+1, e.Label, e.Npub)
 				}
-				choice, _ := PromptLine(fmt.Sprintf("Use which one for ncash? [1-%d, Enter to skip] ", len(entries)))
+				choice, _ := PromptLine(fmt.Sprintf("Use which one for cashctl? [1-%d, Enter to skip] ", len(entries)))
 				idx := parseChoice(choice, len(entries))
 				if idx < 0 {
 					return generateLocalIdentity()
 				}
 				entry = entries[idx]
 			}
-			use := jsonMode || Confirm(cmd, true, fmt.Sprintf("Found an existing Nostr identity in your ncli vault (label: %q). Use it for ncash?", entry.Label))
+			use := jsonMode || Confirm(cmd, true, fmt.Sprintf("Found an existing Nostr identity in your ncli vault (label: %q). Use it for cashctl?", entry.Label))
 			if use {
 				if err := identity.SaveNcliVaultRef(entry.Npub, entry.Label); err != nil {
 					return "", "", err
@@ -97,7 +97,7 @@ func generateLocalIdentity() (npub, source string, err error) {
 	if err != nil {
 		return "", "", err
 	}
-	return npub, "ncash-local", nil
+	return npub, "cashctl-local", nil
 }
 
 func parseChoice(s string, n int) int {
@@ -113,7 +113,7 @@ func parseChoice(s string, n int) int {
 // interactively other than a separate `connect add` call) whether the
 // user already has a Lightning wallet connection to register as their
 // default — answering it is exactly `connect add` with a generated name
-// (see ncash-plan.md's "Local wallet layer"). Returns the resulting
+// (see cashctl-plan.md's "Local wallet layer"). Returns the resulting
 // wallet's name, or "" if skipped.
 func offerDefaultWallet(cmd *cobra.Command, jsonMode bool) string {
 	if jsonMode {
@@ -137,7 +137,7 @@ func offerDefaultWallet(cmd *cobra.Command, jsonMode bool) string {
 		output.Linef(false, "Couldn't save that connection: %s", err)
 		return ""
 	}
-	_ = s.SetDefault(name) // first wallet ever — see ncash-plan.md's default-pointer rule
+	_ = s.SetDefault(name) // first wallet ever — see cashctl-plan.md's default-pointer rule
 	if err := s.Save(); err != nil {
 		output.Linef(false, "Couldn't save that connection: %s", err)
 		return ""

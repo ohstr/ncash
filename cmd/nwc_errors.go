@@ -6,10 +6,10 @@ import (
 	relayclient "github.com/ohstr/nmilat/relay/client"
 	"github.com/spf13/cobra"
 
-	"github.com/ohstr/ncash/internal/output"
+	"github.com/ohstr/cashctl/internal/output"
 )
 
-// classifyNWCErr turns a wallet-call error into ncash's own classified
+// classifyNWCErr turns a wallet-call error into cashctl's own classified
 // *CLIError: a *relayclient.WalletError becomes output.NWCError (plain-
 // language translation, correct exit code); anything else (a dial/network
 // failure) becomes output.NetworkError.

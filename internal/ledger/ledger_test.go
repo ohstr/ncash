@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/ohstr/ncash/internal/appdir"
+	"github.com/ohstr/cashctl/internal/appdir"
 )
 
 func withTempConfigDir(t *testing.T) {

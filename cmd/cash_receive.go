@@ -10,9 +10,9 @@ import (
 	nipcashclient "github.com/ohstr/nmilat/nipcash/client"
 	"github.com/spf13/cobra"
 
-	"github.com/ohstr/ncash/internal/dial"
-	"github.com/ohstr/ncash/internal/ledger"
-	"github.com/ohstr/ncash/internal/output"
+	"github.com/ohstr/cashctl/internal/dial"
+	"github.com/ohstr/cashctl/internal/ledger"
+	"github.com/ohstr/cashctl/internal/output"
 )
 
 func newCashReceiveCmd() *cobra.Command {
@@ -45,11 +45,11 @@ func runCashReceive(cmd *cobra.Command, args []string) error {
 
 	switch dial.Sniff(input) {
 	case dial.KindCircleHub:
-		return output.InvalidInputError(cmd, input, fmt.Errorf("that's a Circle Hub connection — use `ncash join --hub <connection>` to join it"))
+		return output.InvalidInputError(cmd, input, fmt.Errorf("that's a Circle Hub connection — use `cashctl join --hub <connection>` to join it"))
 	case dial.KindCashHub:
-		return output.InvalidInputError(cmd, input, fmt.Errorf("that's a Cash Hub connection (for minting cash) — ncash can't mint, this needs the Hub operator's own tooling"))
+		return output.InvalidInputError(cmd, input, fmt.Errorf("that's a Cash Hub connection (for minting cash) — cashctl can't mint, this needs the Hub operator's own tooling"))
 	case dial.KindNWCURI:
-		return output.InvalidInputError(cmd, input, fmt.Errorf("that looks like a wallet connection, not a cash token — use `ncash connect add <name> <uri>` instead"))
+		return output.InvalidInputError(cmd, input, fmt.Errorf("that looks like a wallet connection, not a cash token — use `cashctl connect add <name> <uri>` instead"))
 	case dial.KindUnknown:
 		return output.InvalidInputError(cmd, input, fmt.Errorf("doesn't look like a valid cash token"))
 	}
@@ -132,7 +132,7 @@ func runCashReceive(cmd *cobra.Command, args []string) error {
 
 // verifyReceivedToken cross-checks a freshly received token against the
 // Hub via list_recipients — the exact call `list-recipients` itself makes
-// (see ncash-plan.md's "it's the exact call receive --verify makes
+// (see cashctl-plan.md's "it's the exact call receive --verify makes
 // internally"). Best-effort match: a bearer entry needs no identity to
 // compare against; a pubkey entry is matched against the local identity's
 // own pubkey (the only identity a "received for me" token would be bound

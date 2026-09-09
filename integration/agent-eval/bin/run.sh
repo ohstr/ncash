@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Orchestrates one full run of the ncash agent-capability eval: brings up
+# Orchestrates one full run of the cashctl agent-capability eval: brings up
 # the isolated stack, provisions each round's real lokihub fixtures (a
 # minted cash token, a plain payer wallet, an ephemeral circle_hub) via
 # the admin API named in ../config.local.yaml, drives each round as a
@@ -104,7 +104,7 @@ prepare_r1() {
 
   echo "==> [r1-cash-lifecycle] provisioning a plain payer wallet"
   local wallet
-  wallet="$(admin_api POST /api/apps '{"name":"ncash agent-eval r1-cash-lifecycle payout","scopes":["make_invoice","get_balance"]}')"
+  wallet="$(admin_api POST /api/apps '{"name":"cashctl agent-eval r1-cash-lifecycle payout","scopes":["make_invoice","get_balance"]}')"
   echo "${wallet}" | jq -r '.pairingUri' > fixtures/r1-wallet-uri.txt
   FIXTURE_HUB_APP_IDS+=("$(echo "${wallet}" | jq -r '.id')")
 }
@@ -115,7 +115,7 @@ prepare_r1() {
 prepare_r2() {
   echo "==> [r2-circle-join] provisioning an ephemeral circle_hub"
   local hub
-  hub="$(admin_api POST /api/apps '{"name":"ncash agent-eval r2-circle-join","kind":"circle_hub","scopes":["circle_wallet"],"circleIdentityName":"ncash agent-eval r2 identity","circlePolicy":"allowlist","circleMaxExpSecs":86400,"circlePerWalletMaxMloki":1000000}')"
+  hub="$(admin_api POST /api/apps '{"name":"cashctl agent-eval r2-circle-join","kind":"circle_hub","scopes":["circle_wallet"],"circleIdentityName":"cashctl agent-eval r2 identity","circlePolicy":"allowlist","circleMaxExpSecs":86400,"circlePerWalletMaxMloki":1000000}')"
   R2_HUB_APP_ID="$(echo "${hub}" | jq -r '.id')"
   R2_HUB_TOKEN="$(echo "${hub}" | jq -r '.circleHubToken')"
   echo "${R2_HUB_APP_ID}" > fixtures/r2-hub-app-id.txt

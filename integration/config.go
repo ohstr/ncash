@@ -1,7 +1,7 @@
 //go:build integration
 
 // Package integration is a black-box, end-to-end suite that drives the
-// compiled ncash binary as a real user/agent would, against a real, already-
+// compiled cashctl binary as a real user/agent would, against a real, already-
 // running lokihub instance. It is excluded from normal builds/tests by the
 // "integration" build tag — run it explicitly with
 // `go test -tags integration ./integration/...` (see integration/README.md).

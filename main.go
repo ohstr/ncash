@@ -1,4 +1,4 @@
-// Command ncash is a wallet CLI for NIP-CASH cash and NIP-CW circle
+// Command cashctl is a wallet CLI for NIP-CASH cash and NIP-CW circle
 // wallets — see README.md and AGENTS.md.
 package main
 
@@ -8,8 +8,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/ohstr/ncash/cmd"
-	"github.com/ohstr/ncash/internal/output"
+	"github.com/ohstr/cashctl/cmd"
+	"github.com/ohstr/cashctl/internal/output"
 )
 
 func main() {

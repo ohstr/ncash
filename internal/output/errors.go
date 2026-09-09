@@ -12,17 +12,17 @@ import (
 // ErrorCode classifies a CLIError for exit-code and --json "code" field
 // purposes. Mirrors ncli's own cli/common/errors.go taxonomy exactly, so
 // an agent or script that already knows ncli's contract needs to learn
-// nothing new for ncash.
+// nothing new for cashctl.
 type ErrorCode string
 
 const (
 	CodeUsage        ErrorCode = "usage"         // the command itself was invoked wrong
-	CodeInvalidInput ErrorCode = "invalid_input" // a value ncash was given doesn't parse/validate
+	CodeInvalidInput ErrorCode = "invalid_input" // a value cashctl was given doesn't parse/validate
 	CodeNotFound     ErrorCode = "not_found"     // a referenced wallet/token/connection doesn't exist
 	CodeConflict     ErrorCode = "conflict"      // a transient state conflict — retryable
 	CodeNetwork      ErrorCode = "network"       // couldn't reach a relay/wallet — retryable
 	CodeAuth         ErrorCode = "auth"          // not authorized, or no longer (expired/restricted)
-	CodeInternal     ErrorCode = "internal"      // fallback: a wallet-side or ncash-side failure
+	CodeInternal     ErrorCode = "internal"      // fallback: a wallet-side or cashctl-side failure
 )
 
 // exitCodes maps each ErrorCode to the process exit code ExitCode returns.
@@ -47,13 +47,13 @@ var retryableCodes = map[ErrorCode]bool{
 	CodeNetwork:  true,
 }
 
-// CLIError is ncash's own classified error. Err is the underlying cause;
+// CLIError is cashctl's own classified error. Err is the underlying cause;
 // Code drives the exit code and --json "code" field; Input is the specific
 // offending value (already redacted if sensitive, see RedactSecretInput),
 // omitted from output when empty; NWCCode, when set, is the raw NIP-47
 // error code a wallet returned — preserved verbatim in --json output
-// alongside ncash's own coarser Code, so an agent that needs
-// finer-grained branching than ncash's 7 buckets still gets it (see
+// alongside cashctl's own coarser Code, so an agent that needs
+// finer-grained branching than cashctl's 7 buckets still gets it (see
 // NWCError in nwc_errors.go).
 type CLIError struct {
 	Err     error
@@ -81,7 +81,7 @@ func wrapCLIError(code ErrorCode, input string, err error) error {
 }
 
 // silence stops cobra from printing its own usage/error text on top of
-// ncash's own EmitError output.
+// cashctl's own EmitError output.
 func silence(cmd *cobra.Command) {
 	if cmd == nil {
 		return
@@ -136,7 +136,7 @@ func AuthError(cmd *cobra.Command, err error) error {
 }
 
 // RuntimeError classifies err as CodeInternal — the fallback bucket for a
-// wallet-side or ncash-side failure that isn't one of the more specific
+// wallet-side or cashctl-side failure that isn't one of the more specific
 // cases above.
 func RuntimeError(cmd *cobra.Command, err error) error {
 	silence(cmd)
@@ -206,12 +206,12 @@ func NoArgs(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// secretLikePattern matches ncash's own raw-secret-shaped inputs: a bech32
+// secretLikePattern matches cashctl's own raw-secret-shaped inputs: a bech32
 // nsec1... key, or a bare 64-character hex string (a raw privkey/secret,
 // as used directly in pubkey:<privkey>/bearer:<secret> credential
 // strings — see internal/credential). Redacting these from error output
 // (which may be logged, pasted into a bug report, or echoed by --json)
-// matters more for ncash than for most CLIs: its whole domain is handling
+// matters more for cashctl than for most CLIs: its whole domain is handling
 // literal spending secrets as command arguments.
 var secretLikePattern = regexp.MustCompile(`^(nsec1[a-z0-9]+|[0-9a-fA-F]{64})$`)
 

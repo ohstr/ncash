@@ -1,7 +1,7 @@
-// Package config manages ncash's multi-wallet inventory: named connections
-// (both ones ncash produced itself — a join result, a redeem destination —
+// Package config manages cashctl's multi-wallet inventory: named connections
+// (both ones cashctl produced itself — a join result, a redeem destination —
 // and foreign ones added via `connect add`) plus a single default pointer
-// (see ncash-plan.md's "Multi-wallet inventory & defaults").
+// (see cashctl-plan.md's "Multi-wallet inventory & defaults").
 package config
 
 import (
@@ -13,10 +13,10 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/ohstr/ncash/internal/appdir"
+	"github.com/ohstr/cashctl/internal/appdir"
 )
 
-// Connection is one named wallet/hub connection ncash knows about — either
+// Connection is one named wallet/hub connection cashctl knows about — either
 // a raw nostr+walletconnect:// URI, or a bech32 string
 // (cashhub1.../circlehub1.../lokicash1...) — stored exactly as given.
 type Connection struct {
@@ -28,7 +28,7 @@ type Connection struct {
 	// successful live get_balance result — the only way to show a figure
 	// for an expired wallet at all, since get_balance itself is one of the
 	// money-moving scopes an expired wallet rejects (only get_info/
-	// get_budget survive expiry). `ncash balance` falls back to this,
+	// get_budget survive expiry). `cashctl balance` falls back to this,
 	// flagged as stranded, when a live call fails specifically with
 	// EXPIRED.
 	LastKnownBalanceMloki *int64 `json:"last_known_balance_mloki,omitempty"`
@@ -99,7 +99,7 @@ func (s *Store) Find(name string) (*Connection, bool) {
 var ErrDuplicateName = errors.New("a connection with that name already exists")
 
 // Add records a new connection under name. Does not touch Default — see
-// SetDefault and ncash-plan.md's "registering a new wallet never silently
+// SetDefault and cashctl-plan.md's "registering a new wallet never silently
 // changes the default" rule; callers decide separately whether to also
 // call SetDefault (e.g. after prompting the user, or automatically for the
 // very first connection — see IsEmpty).
@@ -127,7 +127,7 @@ func (s *Store) Remove(name string) bool {
 }
 
 // IsEmpty reports whether this is a fresh inventory with no connections
-// yet — the one case ncash-plan.md's default-pointer rule inverts from "ask
+// yet — the one case cashctl-plan.md's default-pointer rule inverts from "ask
 // [y/N]" to "ask [Y/n]" (a first wallet has no existing default to
 // protect).
 func (s *Store) IsEmpty() bool {

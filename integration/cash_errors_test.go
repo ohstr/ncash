@@ -92,7 +92,7 @@ func TestCircleJoin_MisPasteCashHub(t *testing.T) {
 	}
 }
 
-// jsonErrorContains parses stderr as ncash's --json error shape and checks
+// jsonErrorContains parses stderr as cashctl's --json error shape and checks
 // its code and that its error message contains substr.
 func jsonErrorContains(t *testing.T, stderr, wantCode, substr string) bool {
 	t.Helper()

@@ -15,7 +15,7 @@ func TestDir_DefaultsUnderUserConfigDir(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Dir() error = %v", err)
 	}
-	want := filepath.Join(tmp, "ncash")
+	want := filepath.Join(tmp, "cashctl")
 	if dir != want {
 		t.Errorf("Dir() = %q, want %q", dir, want)
 	}

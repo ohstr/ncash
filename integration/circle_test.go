@@ -62,8 +62,8 @@ func setUpCircleHub(t *testing.T, admin *adminClient, pubkeyHex string) adminCre
 }
 
 // TestCircleJoin_CreateWalletAndGetInfo provisions a throwaway allowlist-
-// policy circle_hub, authorizes ncash's freshly generated local identity
-// under it, joins via the compiled binary (`ncash join --hub <circlehub1...>`,
+// policy circle_hub, authorizes cashctl's freshly generated local identity
+// under it, joins via the compiled binary (`cashctl join --hub <circlehub1...>`,
 // exercising the real bech32 Circle Hub connection format end to end), and
 // confirms the resulting personal wallet is live by calling get-info on it.
 func TestCircleJoin_CreateWalletAndGetInfo(t *testing.T) {

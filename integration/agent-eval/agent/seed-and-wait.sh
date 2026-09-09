@@ -3,7 +3,7 @@
 # own $HOME, then idles. bin/run.sh drives rounds afterward via
 # `docker compose exec agent claude -p ...` — one fresh `claude` process
 # per round, all sharing this same container/filesystem so state an
-# earlier round produced (the installed `ncash` binary, its identity) is
+# earlier round produced (the installed `cashctl` binary, its identity) is
 # still there for later rounds, the same as a real user's one machine.
 #
 # Never touches the host's real ~/.claude — run.sh copies it into

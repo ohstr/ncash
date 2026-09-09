@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Ground truth for R2: did `ncash join` actually create a circle_wallet
+# Ground truth for R2: did `cashctl join` actually create a circle_wallet
 # child under the ephemeral circle_hub — checked directly against
 # lokihub's admin API, not by trusting the agent's self-report.
 set -uo pipefail

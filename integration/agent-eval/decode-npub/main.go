@@ -3,7 +3,7 @@
 // hex pubkey, so the harness (on the host, not inside the agent
 // container) can authorize the agent's own freshly generated identity
 // under an ephemeral circle_hub's allowlist before that round proceeds.
-// Not part of ncash itself — run with `go run`, never built/shipped.
+// Not part of cashctl itself — run with `go run`, never built/shipped.
 package main
 
 import (

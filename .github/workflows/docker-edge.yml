@@ -12,25 +12,25 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout ncash
+      - name: Checkout cashctl
         uses: actions/checkout@v4
         with:
-          path: ncash
+          path: cashctl
 
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: ncash/go.mod
+          go-version-file: cashctl/go.mod
 
       - name: Build linux/amd64 binary
-        working-directory: ncash
+        working-directory: cashctl
         env:
           CGO_ENABLED: 0
           GOOS: linux
           GOARCH: amd64
         run: |
           mkdir -p ../dist
-          go build -o ../dist/ncash .
+          go build -o ../dist/cashctl .
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -43,8 +43,8 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: dist
-          file: ncash/build/ncash/Dockerfile.release
+          file: cashctl/build/cashctl/Dockerfile.release
           push: true
           tags: |
-            ghcr.io/ohstr/ncash:edge
-            ghcr.io/ohstr/ncash:${{ github.sha }}
+            ghcr.io/ohstr/cashctl:edge
+            ghcr.io/ohstr/cashctl:${{ github.sha }}

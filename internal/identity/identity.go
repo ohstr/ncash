@@ -1,7 +1,7 @@
-// Package identity manages ncash's local identity — compatible with, but
-// not a copy of, ncli's own vault (see ncash-plan.md's "Local wallet layer
+// Package identity manages cashctl's local identity — compatible with, but
+// not a copy of, ncli's own vault (see cashctl-plan.md's "Local wallet layer
 // (identity + ledger)"). identity.json under appdir.Dir() stores either a
-// reference to an existing ncli vault entry, or ncash's own independently
+// reference to an existing ncli vault entry, or cashctl's own independently
 // generated keypair — never both, never a plaintext copy of a vault
 // entry's key.
 package identity
@@ -15,7 +15,7 @@ import (
 
 	ncli "github.com/ohstr/ncli/client"
 
-	"github.com/ohstr/ncash/internal/appdir"
+	"github.com/ohstr/cashctl/internal/appdir"
 )
 
 // Source identifies where Resolve should get the signing key from.
@@ -25,10 +25,10 @@ const (
 	// SourceNcliVault: re-unlock the real ncli vault live on every use —
 	// identity.json holds only Npub/Label, never a copied privkey.
 	SourceNcliVault Source = "ncli-vault"
-	// SourceLocal: ncash's own independently generated keypair, stored
+	// SourceLocal: cashctl's own independently generated keypair, stored
 	// directly (plaintext) in identity.json — chmod 600, same handling as
 	// a seed file.
-	SourceLocal Source = "ncash-local"
+	SourceLocal Source = "cashctl-local"
 )
 
 // Stored is the on-disk shape of identity.json.
@@ -68,8 +68,8 @@ func Exists() (bool, error) {
 
 // ErrNotConfigured is returned by Load when no identity has been set up
 // yet — callers should either check Exists first, or surface this as a
-// "run `ncash init`" usage error.
-var ErrNotConfigured = errors.New("no identity configured yet — run `ncash init` first")
+// "run `cashctl init`" usage error.
+var ErrNotConfigured = errors.New("no identity configured yet — run `cashctl init` first")
 
 // Load reads the stored identity reference.
 func Load() (*Stored, error) {
@@ -99,7 +99,7 @@ func SaveNcliVaultRef(npub, label string) error {
 
 // GenerateAndSaveLocal generates a brand-new keypair via ncli's own
 // client.GenerateIdentity (the same generator ncli's own `ncli id` uses —
-// just persisted under ncash's own identity.json instead of ncli's vault)
+// just persisted under cashctl's own identity.json instead of ncli's vault)
 // and stores it directly. Returns the new identity's npub.
 func GenerateAndSaveLocal() (npub string, err error) {
 	id, err := ncli.GenerateIdentity()
@@ -123,7 +123,7 @@ func save(s *Stored) error {
 	}
 	// 0600: identity.json can hold a plaintext privkey (SourceLocal) — same
 	// handling as a seed file, matching ledger.json's own bearer-secret
-	// handling (ncash-plan.md's "Local wallet layer").
+	// handling (cashctl-plan.md's "Local wallet layer").
 	return os.WriteFile(p, data, 0600)
 }
 
@@ -136,7 +136,7 @@ func save(s *Stored) error {
 type PasswordPrompt func() (string, error)
 
 // Resolve returns the raw private key hex for the stored identity — the
-// default `--as pubkey:<privkey>` credential everywhere in ncash unless a
+// default `--as pubkey:<privkey>` credential everywhere in cashctl unless a
 // command overrides it. For SourceNcliVault, this re-unlocks the real
 // vault live via promptPassword; promptPassword is never called for
 // SourceLocal.

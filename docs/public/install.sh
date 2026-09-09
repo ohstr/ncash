@@ -1,17 +1,17 @@
 #!/bin/sh
-# ncash installer for Linux and macOS.
+# cashctl installer for Linux and macOS.
 #
-#   curl -fsSL https://ohstr.github.io/ncash/install.sh | sh
+#   curl -fsSL https://ohstr.github.io/cashctl/install.sh | sh
 #
 # Never requires sudo: if a directory already on PATH (e.g. /usr/local/bin)
 # is writable by the current user it installs there, otherwise it falls back
 # to ~/.local/bin and prints the PATH update needed.
 #
-# Env overrides: NCASH_VERSION (default: latest), NCASH_INSTALL_DIR.
+# Env overrides: CASHCTL_VERSION (default: latest), CASHCTL_INSTALL_DIR.
 set -eu
 
-REPO="ohstr/ncash"
-BIN_NAME="ncash"
+REPO="ohstr/cashctl"
+BIN_NAME="cashctl"
 
 # ---- output helpers ---------------------------------------------------
 
@@ -44,9 +44,9 @@ detect_os() {
         Linux)  echo linux ;;
         Darwin) echo darwin ;;
         *)
-            error "unsupported OS: $(uname -s). ncash publishes prebuilt binaries for Linux and macOS only.
+            error "unsupported OS: $(uname -s). cashctl publishes prebuilt binaries for Linux and macOS only.
 For Windows, use the PowerShell installer instead:
-  irm https://ohstr.github.io/ncash/install.ps1 | iex"
+  irm https://ohstr.github.io/cashctl/install.ps1 | iex"
             ;;
     esac
 }
@@ -58,7 +58,7 @@ detect_arch() {
         arm64|aarch64)  echo arm64 ;;
         armv6l|armv7l|arm)
             error "unsupported architecture: $arch (32-bit ARM - e.g. an older Raspberry Pi on a 32-bit OS image).
-ncash only publishes 64-bit arm64 binaries. Either install a 64-bit OS, or install via:
+cashctl only publishes 64-bit arm64 binaries. Either install a 64-bit OS, or install via:
   go install github.com/${REPO}@latest"
             ;;
         i386|i686)
@@ -77,7 +77,7 @@ info "Detected platform: ${OS}/${ARCH}"
 
 # ---- version / URLs -----------------------------------------------------
 
-VERSION="${NCASH_VERSION:-latest}"
+VERSION="${CASHCTL_VERSION:-latest}"
 ARCHIVE_NAME="${BIN_NAME}_${OS}_${ARCH}.tar.gz"
 
 if [ "$VERSION" = "latest" ]; then
@@ -95,8 +95,8 @@ fi
 # escalate privileges to force a system directory.
 
 resolve_install_dir() {
-    if [ -n "${NCASH_INSTALL_DIR:-}" ]; then
-        echo "$NCASH_INSTALL_DIR"
+    if [ -n "${CASHCTL_INSTALL_DIR:-}" ]; then
+        echo "$CASHCTL_INSTALL_DIR"
         return
     fi
 

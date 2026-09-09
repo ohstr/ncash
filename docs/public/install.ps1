@@ -1,17 +1,17 @@
-# ncash installer for Windows.
+# cashctl installer for Windows.
 #
-#   irm https://ohstr.github.io/ncash/install.ps1 | iex
+#   irm https://ohstr.github.io/cashctl/install.ps1 | iex
 #
 # Installs to a per-user directory (no Administrator prompt) and updates
 # the user PATH via the registry, so a new terminal picks it up immediately.
 #
-# Env overrides: $env:NCASH_VERSION (default: latest), $env:NCASH_INSTALL_DIR.
+# Env overrides: $env:CASHCTL_VERSION (default: latest), $env:CASHCTL_INSTALL_DIR.
 #requires -version 5
 
 $ErrorActionPreference = 'Stop'
 
-$Repo = 'ohstr/ncash'
-$BinName = 'ncash'
+$Repo = 'ohstr/cashctl'
+$BinName = 'cashctl'
 
 function Write-Info($msg) { Write-Host "==> $msg" -ForegroundColor Cyan }
 function Write-Warn($msg) { Write-Host "warning: $msg" -ForegroundColor Yellow }
@@ -25,7 +25,7 @@ $arch = switch ($env:PROCESSOR_ARCHITECTURE) {
 
 Write-Info "Detected platform: windows/$arch"
 
-$version = if ($env:NCASH_VERSION) { $env:NCASH_VERSION } else { 'latest' }
+$version = if ($env:CASHCTL_VERSION) { $env:CASHCTL_VERSION } else { 'latest' }
 $archiveName = "${BinName}_windows_${arch}.zip"
 
 if ($version -eq 'latest') {
@@ -36,7 +36,7 @@ if ($version -eq 'latest') {
     $checksumsUrl = "https://github.com/$Repo/releases/download/v$version/checksums.txt"
 }
 
-$installDir = if ($env:NCASH_INSTALL_DIR) { $env:NCASH_INSTALL_DIR } else { Join-Path $env:LOCALAPPDATA "$BinName\bin" }
+$installDir = if ($env:CASHCTL_INSTALL_DIR) { $env:CASHCTL_INSTALL_DIR } else { Join-Path $env:LOCALAPPDATA "$BinName\bin" }
 
 $tmp = Join-Path ([System.IO.Path]::GetTempPath()) ([System.IO.Path]::GetRandomFileName())
 New-Item -ItemType Directory -Force -Path $tmp | Out-Null

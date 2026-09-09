@@ -17,7 +17,7 @@ var stdin = bufio.NewReader(os.Stdin)
 // the user just presses Enter. Under --json or --yes, this returns true
 // immediately with no actual prompt: an agent/script has no terminal to
 // answer from, and --yes is an explicit "don't ask" request — see
-// ncash-plan.md's "auto-selection is fine for reads, not for silently
+// cashctl-plan.md's "auto-selection is fine for reads, not for silently
 // spending" principle: the *pick* can be automatic, but a destructive
 // action still needs one confirmation, satisfied non-interactively by
 // either flag.

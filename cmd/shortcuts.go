@@ -5,7 +5,7 @@ import "github.com/spf13/cobra"
 // Top-level shortcuts for the highest-frequency verbs — same relationship
 // as `docker run` to `docker container run`: each shares its RunE (and
 // flags) with the canonical, fully-namespaced command instead of
-// duplicating logic (ncash-plan.md's "Top-level shortcuts (docker-style)").
+// duplicating logic (cashctl-plan.md's "Top-level shortcuts (docker-style)").
 func init() {
 	RootCmd.AddCommand(
 		newWalletInitCmd(),
@@ -40,7 +40,7 @@ func shortcutOf(cmd *cobra.Command) *cobra.Command {
 	return clone
 }
 
-// joinShortcut is `ncash join`, aliasing `ncash circle create` — the one
+// joinShortcut is `cashctl join`, aliasing `cashctl circle create` — the one
 // deliberate verb rename: "join" matches how a member thinks about the
 // action vs. "create," the wire method's own name.
 func joinShortcut() *cobra.Command {

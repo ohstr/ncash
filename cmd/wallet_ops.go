@@ -7,7 +7,7 @@ import (
 	"github.com/ohstr/nmilat/nip47"
 	"github.com/spf13/cobra"
 
-	"github.com/ohstr/ncash/internal/output"
+	"github.com/ohstr/cashctl/internal/output"
 )
 
 func newWalletBudgetCmd() *cobra.Command {

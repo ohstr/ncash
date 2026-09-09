@@ -210,12 +210,12 @@ func TestNWCError_ExpiredMapsToAuth(t *testing.T) {
 }
 
 func TestNWCError_UnknownCodeFallsBackToWalletMessage(t *testing.T) {
-	err := NWCError(newTestCmd(), &relayclient.WalletError{Code: "SOME_FUTURE_CODE", Message: "a message ncash doesn't know how to translate"})
+	err := NWCError(newTestCmd(), &relayclient.WalletError{Code: "SOME_FUTURE_CODE", Message: "a message cashctl doesn't know how to translate"})
 	ce := AsCLIError(err)
 	if ce.Code != CodeInternal {
 		t.Errorf("Code = %q, want %q", ce.Code, CodeInternal)
 	}
-	if ce.Error() != "a message ncash doesn't know how to translate" {
+	if ce.Error() != "a message cashctl doesn't know how to translate" {
 		t.Errorf("Error() = %q, want the wallet's own message verbatim", ce.Error())
 	}
 }

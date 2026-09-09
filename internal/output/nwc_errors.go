@@ -6,13 +6,13 @@ import (
 )
 
 // nwcErrorCode maps NIP-47's generic error codes (nip47.Err* in nmilat) to
-// one of ncash's own 7 ErrorCodes. Deliberately coarse — ncli's own
+// one of cashctl's own 7 ErrorCodes. Deliberately coarse — ncli's own
 // discipline is not to invent new codes casually, so a wallet decline that
 // doesn't obviously fit a more specific bucket falls back to CodeInternal
 // rather than growing the taxonomy. The raw NWC code is never lost even
 // then: NWCError attaches it as CLIError.NWCCode, surfaced verbatim in
 // --json output (see EmitError) for an agent that needs finer-grained
-// branching than ncash's own exit codes provide.
+// branching than cashctl's own exit codes provide.
 var nwcErrorCode = map[string]ErrorCode{
 	"BAD_REQUEST":  CodeInvalidInput,
 	"NOT_FOUND":    CodeNotFound,
@@ -29,7 +29,7 @@ var nwcErrorCode = map[string]ErrorCode{
 // nwcErrorMessages translates NIP-47's error codes into plain language for
 // human/table mode. --json mode never uses this — it preserves the raw
 // {code, message} an agent needs, via NWCCode and the underlying error
-// text (see ncash-plan.md's "Human errors, not protocol errors"
+// text (see cashctl-plan.md's "Human errors, not protocol errors"
 // principle).
 var nwcErrorMessages = map[string]string{
 	"RATE_LIMITED":           "You're making requests too quickly. Wait a moment and try again.",
@@ -39,7 +39,7 @@ var nwcErrorMessages = map[string]string{
 	"RESTRICTED":             "This wallet isn't allowed to do that.",
 	"UNAUTHORIZED":           "Not authorized for that.",
 	"INTERNAL":               "The wallet hit an internal error. Try again.",
-	"UNSUPPORTED_ENCRYPTION": "This wallet uses an encryption scheme ncash doesn't support.",
+	"UNSUPPORTED_ENCRYPTION": "This wallet uses an encryption scheme cashctl doesn't support.",
 	"OTHER":                  "The wallet declined this request.",
 	"PAYMENT_FAILED":         "The payment failed.",
 	"NOT_FOUND":              "Couldn't find that.",
@@ -49,7 +49,7 @@ var nwcErrorMessages = map[string]string{
 
 // NWCError classifies a wallet's NWC error response (nmilat's
 // relay/client.WalletError, returned by every relay/client.NWCClient and
-// nipcash/nipcw client call on a wallet decline) into a *CLIError: ncash's
+// nipcash/nipcw client call on a wallet decline) into a *CLIError: cashctl's
 // own coarse ErrorCode (for the exit code and --json "code" field), a
 // plain-language Message translated from the table above (human mode) or
 // the wallet's own message (unrecognized code), and the raw NWC code

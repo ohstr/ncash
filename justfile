@@ -4,9 +4,9 @@ set shell := ["bash", "-uc"]
 default:
     @just --list --unsorted
 
-# Build the ncash binary into ./ncash
+# Build the cashctl binary into ./cashctl
 build:
-    go build -o ncash .
+    go build -o cashctl .
 
 # Run the test suite (skips the integration/agent-eval suites; see below)
 test:
@@ -35,7 +35,7 @@ tidy:
 # Run vet + test together (local pre-push check)
 check: vet test
 
-# Run ncash straight from source
+# Run cashctl straight from source
 dev *args:
     go run . {{args}}
 
@@ -49,4 +49,4 @@ dev *args:
 docs-dev:
     [ -d .docs-kit/.git ] && git -C .docs-kit pull --quiet || git clone --quiet https://github.com/ohstr/docs-kit .docs-kit
     cd .docs-kit && [ -d node_modules ] || npm install
-    cd .docs-kit && DOCS_CONTENT_DIR="{{justfile_directory()}}" DOCS_TITLE=ncash DOCS_ACCENT_HUE=142 DOCS_FAVICON_GLYPH='$' npm run dev
+    cd .docs-kit && DOCS_CONTENT_DIR="{{justfile_directory()}}" DOCS_TITLE=cashctl DOCS_ACCENT_HUE=142 DOCS_FAVICON_GLYPH='$' npm run dev

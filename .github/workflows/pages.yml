@@ -21,7 +21,7 @@ jobs:
       id-token: write
     uses: ohstr/docs-kit/.github/workflows/build-docs.yml@main
     with:
-      title: ncash
+      title: cashctl
       description: A wallet CLI for NIP-CASH cash tokens and NIP-CW circle wallets.
       accent-hue: 142 # money green
       favicon-glyph: "$"

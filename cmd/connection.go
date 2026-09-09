@@ -9,15 +9,15 @@ import (
 	relayclient "github.com/ohstr/nmilat/relay/client"
 	"github.com/spf13/cobra"
 
-	"github.com/ohstr/ncash/internal/config"
+	"github.com/ohstr/cashctl/internal/config"
 )
 
 // noWalletConfiguredMsg is shown whenever a command needs a wallet to act
 // on/into and none is configured — the exact remediation text from
-// ncash-plan.md's walkthrough #3.
+// cashctl-plan.md's walkthrough #3.
 const noWalletConfiguredMsg = `no wallet configured yet.
-  Already have one?  ncash connect add <name> <connection-uri>
-  Want to join a circle instead?  ncash join --hub <hub-connection>`
+  Already have one?  cashctl connect add <name> <connection-uri>
+  Want to join a circle instead?  cashctl join --hub <hub-connection>`
 
 // ResolveConnectionValue returns the raw connection string to dial: -c/
 // --connection wins if given (resolved by store name, or used directly as

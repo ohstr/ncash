@@ -10,7 +10,7 @@ import (
 )
 
 // npubToHex decodes a standard NIP-19 "npub1..." string to its 32-byte hex
-// pubkey. ncash's CLI only ever prints npub (never hex) for a freshly
+// pubkey. cashctl's CLI only ever prints npub (never hex) for a freshly
 // generated local identity, so this suite decodes it itself to authorize
 // that pubkey under an ephemeral circle_hub's allowlist.
 func npubToHex(npub string) (string, error) {

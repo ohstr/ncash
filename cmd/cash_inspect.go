@@ -9,8 +9,8 @@ import (
 	nipcashclient "github.com/ohstr/nmilat/nipcash/client"
 	"github.com/spf13/cobra"
 
-	"github.com/ohstr/ncash/internal/ledger"
-	"github.com/ohstr/ncash/internal/output"
+	"github.com/ohstr/cashctl/internal/ledger"
+	"github.com/ohstr/cashctl/internal/output"
 )
 
 func newCashListRecipientsCmd() *cobra.Command {
@@ -19,7 +19,7 @@ func newCashListRecipientsCmd() *cobra.Command {
 		Short: "Check your allocation and co-recipients of a held token",
 		Long: `Recipients of the same mint_cash batch share one wallet connection —
 this is how a receiver checks their own allocation and co-recipients
-within it. It's the exact call "ncash receive --verify" makes internally.`,
+within it. It's the exact call "cashctl receive --verify" makes internally.`,
 		Args: output.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			jsonMode, _ := cmd.Flags().GetBool("json")
@@ -82,7 +82,7 @@ func newCashDecodeCmd() *cobra.Command {
 				// nipcash.Token has no JSON tags of its own (it's an
 				// internal SDK type, not a wire DTO) — built explicitly
 				// here so decode's --json output stays snake_case like
-				// every other ncash command's, instead of leaking Go
+				// every other cashctl command's, instead of leaking Go
 				// field names.
 				out := map[string]any{
 					"hrp":               tok.HRP,

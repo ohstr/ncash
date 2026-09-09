@@ -11,9 +11,9 @@ import (
 	nipcashclient "github.com/ohstr/nmilat/nipcash/client"
 	"github.com/spf13/cobra"
 
-	"github.com/ohstr/ncash/internal/credential"
-	"github.com/ohstr/ncash/internal/ledger"
-	"github.com/ohstr/ncash/internal/output"
+	"github.com/ohstr/cashctl/internal/credential"
+	"github.com/ohstr/cashctl/internal/ledger"
+	"github.com/ohstr/cashctl/internal/output"
 )
 
 func newCashConsolidateCmd() *cobra.Command {
@@ -41,7 +41,7 @@ func runCashConsolidate(cmd *cobra.Command, args []string) error {
 
 	// Checked explicitly (not cobra's own MarkFlagRequired) so a missing
 	// --sources is a classified UsageError like every other argument
-	// mistake, instead of bypassing ncash's error contract entirely — see
+	// mistake, instead of bypassing cashctl's error contract entirely — see
 	// output.ExactArgs's own doc comment for why cobra's built-in
 	// validators are avoided throughout this command tree.
 	if sourcesFlag == "" {

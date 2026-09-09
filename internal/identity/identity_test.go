@@ -7,14 +7,14 @@ import (
 
 	ncli "github.com/ohstr/ncli/client"
 
-	"github.com/ohstr/ncash/internal/appdir"
+	"github.com/ohstr/cashctl/internal/appdir"
 )
 
-// withTempDirs isolates both ncash's own appdir (identity.json) and ncli's
+// withTempDirs isolates both cashctl's own appdir (identity.json) and ncli's
 // vault (client.VaultPath/PrefsPath) under one fresh temp dir per test,
 // mirroring ncli's own test isolation technique (withTempConfigDir in
 // ncli's client package) — same XDG_CONFIG_HOME override reaches both,
-// since ncash's appdir.Dir and ncli's AppConfigDir both resolve through
+// since cashctl's appdir.Dir and ncli's AppConfigDir both resolve through
 // os.UserConfigDir.
 func withTempDirs(t *testing.T) {
 	t.Helper()

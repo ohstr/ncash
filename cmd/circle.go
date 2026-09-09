@@ -10,10 +10,10 @@ import (
 	nipcwclient "github.com/ohstr/nmilat/nipcw/client"
 	"github.com/spf13/cobra"
 
-	"github.com/ohstr/ncash/internal/config"
-	"github.com/ohstr/ncash/internal/credential"
-	"github.com/ohstr/ncash/internal/dial"
-	"github.com/ohstr/ncash/internal/output"
+	"github.com/ohstr/cashctl/internal/config"
+	"github.com/ohstr/cashctl/internal/credential"
+	"github.com/ohstr/cashctl/internal/dial"
+	"github.com/ohstr/cashctl/internal/output"
 )
 
 func newCircleCmd() *cobra.Command {
@@ -127,7 +127,7 @@ func runCircleCreate(cmd *cobra.Command, args []string) error {
 	if setDefault {
 		fmt.Printf("Default wallet set to %s.\n", name)
 	} else if !wasEmpty {
-		fmt.Printf("Saved as %s. Switch anytime with `ncash wallet use %s`.\n", name, name)
+		fmt.Printf("Saved as %s. Switch anytime with `cashctl wallet use %s`.\n", name, name)
 	}
 	return nil
 }
@@ -142,7 +142,7 @@ func resolveHubConnection(cmd *cobra.Command, hub string) (pairingURI, label str
 	switch dial.Sniff(hub) {
 	case dial.KindCashHub:
 		return "", "", output.InvalidInputError(cmd, hub, fmt.Errorf(
-			"that's a Cash Hub connection (for minting cash), not a Circle Hub connection. ncash can't mint — this needs the Hub operator's own tooling"))
+			"that's a Cash Hub connection (for minting cash), not a Circle Hub connection. cashctl can't mint — this needs the Hub operator's own tooling"))
 	case dial.KindCircleHub:
 		conn, err := nipcw.DecodeCircleHubConnection(hub)
 		if err != nil {

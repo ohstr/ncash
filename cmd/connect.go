@@ -5,15 +5,15 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/ohstr/ncash/internal/config"
-	"github.com/ohstr/ncash/internal/output"
+	"github.com/ohstr/cashctl/internal/config"
+	"github.com/ohstr/cashctl/internal/output"
 )
 
 func newConnectCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "connect",
 		Short: "Manage foreign wallet connections",
-		Long: `The general-purpose way to register any NWC connection ncash didn't
+		Long: `The general-purpose way to register any NWC connection cashctl didn't
 produce itself: your own plain Lightning wallet (e.g. a standard NWC
 connection you already generated some other way), or one handed to you
 from another device.`,
@@ -82,7 +82,7 @@ func newConnectListCmd() *cobra.Command {
 				return nil
 			}
 			if s.IsEmpty() {
-				fmt.Println("No connections registered yet. Run `ncash init` or `ncash connect add`.")
+				fmt.Println("No connections registered yet. Run `cashctl init` or `cashctl connect add`.")
 				return nil
 			}
 			for _, c := range s.Connections {
@@ -106,8 +106,8 @@ func newConnectUseCmd() *cobra.Command {
 	}
 }
 
-// runWalletUse backs both `ncash wallet use` (ncash-plan.md's canonical
-// form, mirroring ncli's own `relay context` pattern) and `ncash connect
+// runWalletUse backs both `cashctl wallet use` (cashctl-plan.md's canonical
+// form, mirroring ncli's own `relay context` pattern) and `cashctl connect
 // use` (the Command Tree section's own connect-group listing) — same
 // action, two entry points sharing one function rather than duplicating
 // the logic, the same pattern the top-level shortcuts use throughout.

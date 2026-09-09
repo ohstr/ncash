@@ -3,7 +3,7 @@
 // call over Nostr, not a REST admin-API endpoint, so unlike every other
 // fixture this harness provisions (plain bash + curl against lokihub's
 // admin API), minting an actual bearer cash token needs a real NWC dial —
-// this program is that one Go-shaped exception. Not part of ncash itself;
+// this program is that one Go-shaped exception. Not part of cashctl itself;
 // run with `go run`, never built/shipped.
 //
 // Usage:
@@ -65,7 +65,7 @@ func probe(baseURL, token string) error {
 		PairingUri string `json:"pairingUri"`
 	}
 	err := doAdmin(baseURL, token, http.MethodPost, "/api/apps", map[string]any{
-		"name":                  "ncash agent-eval nwc-probe",
+		"name":                  "cashctl agent-eval nwc-probe",
 		"kind":                  "cash_hub",
 		"scopes":                []string{"cash_hub"},
 		"cashPerWalletMaxMloki": 10_000_000,
@@ -159,7 +159,7 @@ func mint(baseURL, token string, amountMillis uint64) error {
 		PairingUri string `json:"pairingUri"`
 	}
 	err := doAdmin(baseURL, token, http.MethodPost, "/api/apps", map[string]any{
-		"name":                  "ncash agent-eval r1-cash-lifecycle",
+		"name":                  "cashctl agent-eval r1-cash-lifecycle",
 		"kind":                  "cash_hub",
 		"scopes":                []string{"cash_hub"},
 		"cashPerWalletMaxMloki": 10_000_000,

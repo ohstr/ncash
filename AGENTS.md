@@ -1,34 +1,34 @@
-# ncash
+# cashctl
 
-`ncash` is a Go CLI wallet for [NIP-CASH](https://github.com/flokiorg/lokihub/blob/main/docs/nips/NIP-CASH.md)
+`cashctl` is a Go CLI wallet for [NIP-CASH](https://github.com/flokiorg/lokihub/blob/main/docs/nips/NIP-CASH.md)
 cash tokens and [NIP-CW](https://github.com/flokiorg/lokihub/blob/main/docs/nips/NIP-CW.md)
 circle wallets — for someone who doesn't run a Hub or node themselves.
-Assume the `ncash` binary is already on `PATH`. State (identity, registered
-wallets, held tokens) lives under `$XDG_CONFIG_HOME/ncash`, overridable with
+Assume the `cashctl` binary is already on `PATH`. State (identity, registered
+wallets, held tokens) lives under `$XDG_CONFIG_HOME/cashctl`, overridable with
 `--config-dir`.
 
 ## Commands
 
 | Command | Purpose |
 |---|---|
-| `ncash init` | Set up your identity (reusing an ncli vault entry if you have one) and optionally a default wallet |
-| `ncash join --hub <connection>` | Join a circle via its Circle Hub connection (`circlehub1...` or a raw NWC URI), creating a personal wallet |
-| `ncash circle create --hub <connection>` | Same as `join` — the canonical, fully-namespaced form |
-| `ncash wallet show` | Your identity, registered wallets, and held cash tokens |
-| `ncash wallet history` | Local action log (receive/redeem/transfer/consolidate) |
-| `ncash wallet use <name>` / `ncash connect use <name>` | Switch your default wallet |
-| `ncash wallet balance [--breakdown] [--from <name>]` | Unified balance: every wallet's live balance + every held token's value |
-| `ncash wallet get-info` / `budget` / `invoice <amount>` / `pay <invoice>` / `list-tx` / `sign-message <msg>` | Ordinary NIP-47 calls against the current wallet |
-| `ncash invoice <amount>` / `ncash pay <invoice>` | Top-level shortcuts for `wallet invoice`/`wallet pay` |
-| `ncash connect add <name> <connection>` / `list` / `rm <name>` | Register/list/remove any other NWC connection |
-| `ncash receive <token> [--verify] [--secret <bearer_secret>]` | Decode a cash token locally and add it to your wallet; `--verify` cross-checks it against the Hub; `--secret` captures a bearer-mode token's spending credential (see below) |
-| `ncash redeem [--token <id>] [--to <name>] [--invoice <bolt11>] [--as <credential>]` | Redeem a held token into a wallet or a raw invoice |
-| `ncash transfer --to <target> [--split <mloki>] [--as <credential>]` | Send a held token, in full or split |
-| `ncash consolidate --sources <ids-or-verbose> [--to <target>]` | Merge several held tokens into one |
-| `ncash cash list-recipients [--token <id>]` | Your allocation + co-recipients of a held token (network) |
-| `ncash cash decode <token>` | Inspect a token locally, no network call |
-| `ncash cash verify-provenance <token>` | Verify a token's mint-signature, locally |
-| `ncash version` | Print the ncash version |
+| `cashctl init` | Set up your identity (reusing an ncli vault entry if you have one) and optionally a default wallet |
+| `cashctl join --hub <connection>` | Join a circle via its Circle Hub connection (`circlehub1...` or a raw NWC URI), creating a personal wallet |
+| `cashctl circle create --hub <connection>` | Same as `join` — the canonical, fully-namespaced form |
+| `cashctl wallet show` | Your identity, registered wallets, and held cash tokens |
+| `cashctl wallet history` | Local action log (receive/redeem/transfer/consolidate) |
+| `cashctl wallet use <name>` / `cashctl connect use <name>` | Switch your default wallet |
+| `cashctl wallet balance [--breakdown] [--from <name>]` | Unified balance: every wallet's live balance + every held token's value |
+| `cashctl wallet get-info` / `budget` / `invoice <amount>` / `pay <invoice>` / `list-tx` / `sign-message <msg>` | Ordinary NIP-47 calls against the current wallet |
+| `cashctl invoice <amount>` / `cashctl pay <invoice>` | Top-level shortcuts for `wallet invoice`/`wallet pay` |
+| `cashctl connect add <name> <connection>` / `list` / `rm <name>` | Register/list/remove any other NWC connection |
+| `cashctl receive <token> [--verify] [--secret <bearer_secret>]` | Decode a cash token locally and add it to your wallet; `--verify` cross-checks it against the Hub; `--secret` captures a bearer-mode token's spending credential (see below) |
+| `cashctl redeem [--token <id>] [--to <name>] [--invoice <bolt11>] [--as <credential>]` | Redeem a held token into a wallet or a raw invoice |
+| `cashctl transfer --to <target> [--split <mloki>] [--as <credential>]` | Send a held token, in full or split |
+| `cashctl consolidate --sources <ids-or-verbose> [--to <target>]` | Merge several held tokens into one |
+| `cashctl cash list-recipients [--token <id>]` | Your allocation + co-recipients of a held token (network) |
+| `cashctl cash decode <token>` | Inspect a token locally, no network call |
+| `cashctl cash verify-provenance <token>` | Verify a token's mint-signature, locally |
+| `cashctl version` | Print the cashctl version |
 
 Credential/target flag syntax (`--as`, `--to`): `pubkey:<hex-or-privkey>`,
 `bearer:<secret>` / `bearer-target`, `connection-key:<privkey>,<platform>,
@@ -59,7 +59,7 @@ plain `Error: ...` line by default, or `{"error", "code", "retryable",
 | `conflict` | 5 | yes | collides with existing state (a token already held, a wallet's rate limit) |
 | `network` | 6 | yes | couldn't reach a relay/wallet |
 | `auth` | 7 | no | not authorized, or no longer (a wallet declined as restricted/unauthorized/expired) |
-| `internal` | 1 | no | anything else — a wallet-side decline that isn't one of the above, or an ncash-side failure |
+| `internal` | 1 | no | anything else — a wallet-side decline that isn't one of the above, or a cashctl-side failure |
 
 `input`, when present, is the single specific value that caused the
 failure — **never** raw secret material: an `nsec1...`-shaped or bare
@@ -70,7 +70,7 @@ the string legible in the error. `retryable` lets an agent decide whether
 to back off and retry (`conflict`/`network`) or fix the input and try
 again (everything else) without string-matching the message. `nwc_code`,
 when present, is the raw NIP-47 error code (`RESTRICTED`, `EXPIRED`,
-`INSUFFICIENT_BALANCE`, ...) a wallet returned — ncash's own 7-code table
+`INSUFFICIENT_BALANCE`, ...) a wallet returned — cashctl's own 7-code table
 is deliberately coarse, so this is there for an agent that needs
 finer-grained branching. A usage mistake in `--json` mode skips the
 human-readable help dump (which would otherwise land on stdout) in favor
@@ -81,9 +81,9 @@ of the structured error alone.
 This repo ships example-driven guidance in `skills/`, one file per area:
 
 - Setting up an identity, managing wallets, or making ordinary Lightning
-  calls (`init`, `wallet ...`, `connect ...`) → `skills/ncash-wallet/SKILL.md`
+  calls (`init`, `wallet ...`, `connect ...`) → `skills/cashctl-wallet/SKILL.md`
 - Receiving, redeeming, transferring, or consolidating NIP-CASH tokens
   (`receive`, `redeem`, `transfer`, `consolidate`, `cash ...`) →
-  `skills/ncash-cash/SKILL.md`
+  `skills/cashctl-cash/SKILL.md`
 - Joining a circle for a personal wallet (`join`, `circle create`) →
-  `skills/ncash-circle/SKILL.md`
+  `skills/cashctl-circle/SKILL.md`

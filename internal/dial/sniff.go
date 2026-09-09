@@ -1,7 +1,7 @@
 // Package dial sniffs what kind of string a user pasted into `receive`,
 // `join --hub`, or `connect add` — a plain NWC URI, a cash token, or one
 // of the two Hub bech32 formats — without a network call
-// (ncash-plan.md's "receive auto-detects what you pasted").
+// (cashctl-plan.md's "receive auto-detects what you pasted").
 package dial
 
 import (
@@ -21,11 +21,11 @@ const (
 	// satscash1..., or any other HRP nipcash.Decode would accept) —
 	// anything that isn't specifically a Hub connection.
 	KindCashToken
-	// KindCircleHub: a circlehub1... string — the one Hub kind ncash
+	// KindCircleHub: a circlehub1... string — the one Hub kind cashctl
 	// actually acts on (feeds `join --hub`).
 	KindCircleHub
 	// KindCashHub: a cashhub1... string — recognized so a mis-paste can
-	// fail with a specific error, never acted on (ncash has no mint
+	// fail with a specific error, never acted on (cashctl has no mint
 	// capability).
 	KindCashHub
 )
@@ -33,7 +33,7 @@ const (
 // hub HRPs are matched exactly; anything else that decodes as valid
 // bech32 is treated as an attempted cash token — the only other bech32
 // family in this ecosystem (nipcash.Decode itself accepts any HRP, so
-// ncash doesn't need to enumerate lokicash/satscash/... here).
+// cashctl doesn't need to enumerate lokicash/satscash/... here).
 const (
 	hrpCircleHub = "circlehub"
 	hrpCashHub   = "cashhub"

@@ -1,5 +1,5 @@
-// Package credential parses ncash's flag-string syntax for identity
-// credentials and cash-transfer targets (ncash-plan.md's Cash command
+// Package credential parses cashctl's flag-string syntax for identity
+// credentials and cash-transfer targets (cashctl-plan.md's Cash command
 // tree) into the nipcash/nipcw types the SDK itself expects. This syntax
 // is only needed for the override case — acting as/for someone else — the
 // default path resolves a held token's credential from the ledger

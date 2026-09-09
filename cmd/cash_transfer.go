@@ -9,9 +9,9 @@ import (
 	nipcashclient "github.com/ohstr/nmilat/nipcash/client"
 	"github.com/spf13/cobra"
 
-	"github.com/ohstr/ncash/internal/credential"
-	"github.com/ohstr/ncash/internal/ledger"
-	"github.com/ohstr/ncash/internal/output"
+	"github.com/ohstr/cashctl/internal/credential"
+	"github.com/ohstr/cashctl/internal/ledger"
+	"github.com/ohstr/cashctl/internal/output"
 )
 
 func newCashTransferCmd() *cobra.Command {
@@ -106,7 +106,7 @@ func runCashTransfer(cmd *cobra.Command, args []string) error {
 	if jsonMode {
 		// nipcash.CashTransferResult has no JSON tags of its own (an
 		// internal SDK type, not a wire DTO) — built explicitly here so
-		// --json output stays snake_case like every other ncash command's,
+		// --json output stays snake_case like every other cashctl command's,
 		// instead of leaking Go field names (see cash_inspect.go's decode
 		// command for the same fix).
 		output.PrintJSON(map[string]any{
